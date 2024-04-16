@@ -1,0 +1,50 @@
+{% extends 'main/origin.html' %}
+{% load static %}
+
+{% block title %}Books:{% endblock %}
+
+{% block content %}
+    <h1>Notification</h1>
+
+    <div id="notification"></div>
+
+    <script>
+
+
+<!--        var socket = new WebSocket('ws://localhost/ws/notification/');-->
+<!--        socket.onmessage = function(event) {-->
+<!--            var message = event.data;-->
+<!--            var notificationsDiv = document.getElementById('notification');-->
+<!--            notificationsDiv.innerHTML += '<p>' + message + '</p>';-->
+<!--        };-->
+
+
+
+var socket = new WebSocket('ws://localhost/ws/notification/');
+socket.onmessage = function(event) {
+    var message = event.data;
+    // Отображение уведомления на странице
+    var notificationsDiv = document.getElementById('notification');
+    notificationsDiv.innerHTML += '<p>' + message + '</p>';
+};
+
+document.getElementById('createUserForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var formData = new FormData(this);
+    fetch('/api/userprofile/', {
+        method: 'POST',
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to create user profile');
+        }
+    }).then(data => {
+        console.log(data);
+    }).catch(error => {
+        console.error(error);
+    });
+});
+    </script>
+{% endblock %}
